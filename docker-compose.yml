@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - ./data/local_pgdata:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - ./data/pgadmin-data:/var/lib/pgadmin
+
+  fastapi-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fastapi
+    container_name: fastapi
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    networks:
+      - taskmanager
+    volumes:
+      - ".:/usr/srv"
+
+  smtp-service:
+    image: axllent/mailpit
+    restart: unless-stopped
+    container_name: smtp
+    networks:
+      - taskmanager
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+networks:
+  taskmanager:
+volumes:
+  local_pgdata:
+  pgadmin-data:
+
