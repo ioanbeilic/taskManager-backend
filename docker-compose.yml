@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: admin
     volumes:
-      - ./data/local_pgdata:/var/lib/postgresql/data
+      - ./.data/local_pgdata:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin4_container
@@ -22,7 +22,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: root@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     volumes:
-      - ./data/pgadmin-data:/var/lib/pgadmin
+      - ./.data/pgadmin-data:/var/lib/pgadmin
 
   fastapi-service:
     build:
